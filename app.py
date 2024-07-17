@@ -15,15 +15,15 @@ def convert_currency():
     # Get parameters from the request
     source = request.args.get('source')
     target = request.args.get('target')
-    amount = float(request.args.get('amount'))
+    # Check if the amount is a valid number
+    try: 
+        amount = float(request.args.get('amount'))
+    except:
+        return jsonify({"msg": "failed", "error": "Invalid parameters, please enter correct format as amount"}), 400
 
     # Check if currency codes are valid
     if source not in converter_service.exchange_rate_keys() or target not in converter_service.exchange_rate_keys():
         return jsonify({"msg": "failed", "error": "Invalid parameters, please enter "+str(converter_service.exchange_rate_keys())+" as parameter"}), 400
-    
-    # Check if the amount is a valid number
-    if not isinstance(amount, (int, float, complex)):
-        return jsonify({"msg": "failed", "error": "Invalid parameters, please enter correct format as amount"}), 400
 
     try:
         # Perform currency conversion
